@@ -1,9 +1,46 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Create Users
+admin = User.create!(
+  email: "admin@example.com",
+  password: "password123",
+  name: "Admin User",
+  role: "supervisor"
+)
+
+user = User.create!(
+  email: "user@example.com",
+  password: "password123",
+  name: "Regular User",
+  role: "mentor",
+  mentor_id: 1
+)
+
+# Create Categories
+categories = [
+  Category.create!(name: "Development", user_id: admin.id),
+  Category.create!(name: "Design", user_id: user.id),
+  Category.create!(name: "Management", user_id: admin.id)
+]
+
+# Create Tasks
+tasks = []
+10.times do |i|
+  task = Task.create!(
+    title: "Task #{i + 1}",
+    description: "This is a detailed description for Task #{i + 1}.",
+    priority: %w[low medium high urgent].sample,
+    category: categories.sample,
+    parent_task_id: i.even? ? nil : tasks.sample&.id,
+    deadline: rand(5..15).days.from_now,
+    start_date: rand(1..5).days.ago,
+    status: %w[pending in_progress completed expired].sample,
+    created_at: Time.now,
+    updated_at: Time.now
+  )
+
+  task.task_participants.create!(user: admin, role: "creator")
+  task.task_participants.create!(user: user, role: "assignee") if [ true, false ].sample
+
+  tasks << task
+end
+
+puts "Seed data created successfully!"

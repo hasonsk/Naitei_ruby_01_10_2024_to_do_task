@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_04_235412) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_02_052519) do
   create_table "activities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "task_id", null: false
@@ -40,32 +40,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_04_235412) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "task_participants", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "task_id", null: false
-    t.bigint "user_id", null: false
-    t.integer "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["task_id"], name: "index_task_participants_on_task_id"
-    t.index ["user_id"], name: "index_task_participants_on_user_id"
-  end
-
   create_table "tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.integer "priority"
-    t.bigint "category_id", null: false
+    t.bigint "category_id"
     t.bigint "parent_task_id"
     t.datetime "deadline"
     t.datetime "start_date"
     t.integer "status"
-    t.bigint "creator_id", null: false
-    t.bigint "assignee_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
+    t.integer "user_id"
+    t.integer "assignee_id"
     t.index ["category_id"], name: "index_tasks_on_category_id"
-    t.index ["creator_id"], name: "index_tasks_on_creator_id"
     t.index ["parent_task_id"], name: "index_tasks_on_parent_task_id"
   end
 
@@ -76,6 +64,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_04_235412) do
     t.integer "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remember_digest"
+    t.string "activation_digest"
+    t.boolean "activated"
+    t.datetime "activated_at"
+    t.integer "mentor_id"
   end
 
   add_foreign_key "activities", "tasks"
@@ -83,10 +76,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_04_235412) do
   add_foreign_key "categories", "users"
   add_foreign_key "comments", "tasks"
   add_foreign_key "comments", "users"
-  add_foreign_key "task_participants", "tasks"
-  add_foreign_key "task_participants", "users"
   add_foreign_key "tasks", "categories"
   add_foreign_key "tasks", "tasks", column: "parent_task_id"
-  add_foreign_key "tasks", "users", column: "assignee_id"
-  add_foreign_key "tasks", "users", column: "creator_id"
 end

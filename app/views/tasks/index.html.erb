@@ -1,0 +1,37 @@
+<% provide :title, t("tasks.index.title") %>
+<h1><%= t "tasks.index.title" %></h1>
+<body>
+  <div class="container mt-5">
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <input type="text" class="form-control" placeholder="<%= t("tasks.index.filter.search_placeholder") %>" id="search" name="search" value="<%= params[:search] %>">
+      </div>
+
+      <div class="col-md-2">
+        <%= select_tag "category",
+            options_for_select([
+              [t("tasks.index.filter.all_categories"), ""]] +
+                                  @categories.map { |category| [category.name, category.id] },
+                                  params[:category]),
+            class: "form-select", id: "filter-category" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= select_tag "status", options_for_select([
+          [t("tasks.index.filter.all_statuses"), ""],
+          [t("tasks.index.filter.pending"), Settings.default.status.pending],
+          [t("tasks.index.filter.in_progress"), Settings.default.status.in_progress],
+          [t("tasks.index.filter.completed"), Settings.default.status.completed],
+          [t("tasks.index.filter.expired"), Settings.default.status.expired]
+          ], params[:status]), class: "form-select", id: "filter-status" %>
+      </div>
+      <div class="col-md-3 text-end">
+        <button class="btn btn-primary" id="filter-btn"><%= t("tasks.index.filter.filter_button") %></button>
+        <a href="<%= new_task_path %>" class="btn btn-success"><%= t("tasks.index.filter.create_task_button") %></a>
+      </div>
+    </div>
+
+    <%= render 'task_table', tasks: @tasks, pagy: @pagy %>
+  </div>
+</body>
