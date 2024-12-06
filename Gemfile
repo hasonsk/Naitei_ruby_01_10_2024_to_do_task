@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "bcrypt", "~> 3.1.7"
+gem "config"
 gem "faker"
 gem "rails", "~> 7.2.2"
 gem "sprockets-rails"
