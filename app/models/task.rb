@@ -1,4 +1,5 @@
 class Task < ApplicationRecord
+  belongs_to :user
   belongs_to :category, optional: true
   belongs_to :parent_task, class_name: "Task", optional: true
   has_many :sub_tasks, class_name: "Task", foreign_key: :parent_task_id, dependent: :destroy
@@ -14,6 +15,7 @@ class Task < ApplicationRecord
   validates :priority, presence: true
   validates :status, presence: true
   validates :deadline, comparison: { greater_than: :start_date, allow_blank: true }, if: :start_date?
+  TASK_PERMITTED_ATTRIBUTES = %i[title priority status start_date deadline category_id].freeze
 
   scope :by_user, ->(user_id) { joins(:task_participants).where(task_participants: { user_id: user_id }) }
   scope :by_priority, ->(priority) { where(priority: priorities[priority]) }
