@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-md-12">
+    <% if tasks.any? %>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <% [
+              t("tasks.index.table.title"),
+              t("tasks.index.table.priority"),
+              t("tasks.index.table.category"),
+              t("tasks.index.table.status"),
+              link_to(t("tasks.index.table.created_at"), "?sort=created_at"),
+              link_to(t("tasks.index.table.deadline"), "?sort=deadline"),
+              t("tasks.index.table.actions")
+            ].each do |header| %>
+              <th><%= header %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks.each do |task| %>
+            <tr>
+              <td><%= task.title %></td>
+              <td><%= task.priority.capitalize %></td>
+              <td><%= task.category&.name || "N/A" %></td>
+              <td><%= task.status.capitalize %></td>
+              <td><%= task.created_at.strftime("%Y-%m-%d") %></td>
+              <td><%= task.deadline&.strftime("%Y-%m-%d") || "N/A" %></td>
+              <td>
+                <%= link_to t("tasks.index.table.update"), edit_task_path(task), class: "btn btn-warning btn-sm" %>
+                <%= button_to t("tasks.index.table.delete"), task_path(task), method: :delete, data: { turbo_confirm: t("user.you_sure") }, class: "btn btn-danger btn-sm", form: { style: "display: inline;" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-center">
+        <%== pagy_bootstrap_nav pagy %>
+      </div>
+    <% else %>
+      <p class="text-center"><%= t("tasks.index.messages.no_tasks") %></p>
+    <% end %>
+  </div>
+</div>

@@ -5,6 +5,6 @@ class UpdateTasksAndTaskParticipants < ActiveRecord::Migration[7.0]
 
     add_column :task_participants, :role, :string, null: false, default: 'assignee'
 
-    add_index :task_participants, [:task_id, :role], unique: true, where: "role = 'creator'"
+    add_index :task_participants, %i[task_id role], unique: true, where: "role = 'creator'"
   end
 end
