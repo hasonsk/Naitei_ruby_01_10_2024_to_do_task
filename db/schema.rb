@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_19_073050) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_19_092500) do
   create_table "activities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "task_id", null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_073050) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.integer "assignee_id"
     t.index ["category_id"], name: "index_tasks_on_category_id"
     t.index ["parent_task_id"], name: "index_tasks_on_parent_task_id"
   end

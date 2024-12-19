@@ -8,6 +8,8 @@ class Task < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :activities, dependent: :destroy
 
+  accepts_nested_attributes_for :task_participants, allow_destroy: true
+
   enum priority: Settings.default.priorities.to_h.transform_keys(&:to_sym)
   enum status: Settings.default.status.to_h.transform_keys(&:to_sym)
 
@@ -15,8 +17,8 @@ class Task < ApplicationRecord
   validates :priority, presence: true
   validates :status, presence: true
   validates :deadline, comparison: { greater_than: :start_date, allow_blank: true }, if: :start_date?
-  TASK_PERMITTED_ATTRIBUTES = %i[title priority status start_date deadline category_id].freeze
-
+  TASK_PERMITTED_ATTRIBUTES = %i[title description priority status start_date deadline category_id parent_task_id].freeze
+  # SUBTASK_PERMITTED_ATTRIBUTES = %i[title description priority status user_id start_date deadline category_id].freeze
   scope :by_user, ->(user_id) { joins(:task_participants).where(task_participants: { user_id: user_id }) }
   scope :by_priority, ->(priority) { where(priority: priorities[priority]) }
   scope :by_status, ->(status) { where(status: statuses[status]) }

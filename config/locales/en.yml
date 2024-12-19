@@ -46,6 +46,10 @@ en:
         expired: "Expired"
         filter_button: "Filter"
         create_task_button: "Create Task"
+      messages:
+        no_subtasks: "No subtasks"
+        successfully_updated: "Successfully updated"
+        no_tasks: "No tasks found."
       table:
         created_at: "Created At"
         deadline: "Deadline"
@@ -55,11 +59,12 @@ en:
         actions: "Actions"
         update: "Update"
         delete: "Delete"
-      messages:
-        no_tasks: "No tasks found."
+    edit:
+      add_new_subtask: "Add New Subtask"
 
     update:
       title: "Update Task"
 
     new:
       title: "New Task"
+    parent_task_not_found: "Parent task notfound"
