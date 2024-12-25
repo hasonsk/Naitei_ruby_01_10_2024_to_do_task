@@ -51,6 +51,7 @@ class TasksController < ApplicationController
   end
 
   def edit
+    @comments = @task.comments
     @subtasks = @task.sub_tasks
     @pagy, @subtasks = pagy(@subtasks, items: 5)
   end
@@ -81,7 +82,11 @@ class TasksController < ApplicationController
   end
 
   def subtask_params
-    params.permit(:title, :description, :priority, :status, :category_id, :user_id, :start_date, :deadline)
+    params.permit(Task::SUBTASK_PERMITTED_ATTRIBUTES)
+  end
+
+  def comment_params
+    params.require(:comment).permit(Comment::COMMENT_PERMITTED_ATTRIBUTES)
   end
 
   def set_task

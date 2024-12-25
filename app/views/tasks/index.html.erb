@@ -26,9 +26,6 @@
           <option value="expired"><%= t("tasks.index.filter.expired") %></option>
         </select>
       </div>
-      <div class="col-md-2">
-        <input type="date" class="form-control" id="filter-deadline" name="deadline" value="<%= params[:deadline] %>">
-      </div>
       <div class="col-md-3 text-end">
         <button class="btn btn-primary" id="filter-btn"><%= t("tasks.index.filter.filter_button") %></button>
         <a href="<%= new_task_path %>" class="btn btn-success"><%= t("tasks.index.filter.create_task_button") %></a>

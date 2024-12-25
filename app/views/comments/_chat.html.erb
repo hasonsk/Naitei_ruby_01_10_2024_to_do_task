@@ -1,0 +1,27 @@
+<h3><%= t "tasks.comment.comments" %></h3>
+
+<div class="chat-comments">
+  <% if @comments.present? %>
+    <% @comments.each do |comment| %>
+      <div class="chat-comment <%= comment.sender == current_user ? "sent" : "received" %>">
+        <div class="comment-content">
+          <div class="username"><%= comment.sender.name %></div>
+          <div class="text"><%= comment.content %></div>
+          <div class="timestamp"><%= comment.created_at.strftime("%H:%M") %></div>
+        </div>
+        <% if comment.sender == current_user %>
+          <%= button_to t("tasks.comment.delete"), task_comment_path(@task, comment), method: :delete, data: { confirm: t("tasks.comment.confirrm_delete") }, class: "btn btn-danger btn-sm" %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p><%= t "tasks.comment.no_comments_yet" %></p>
+  <% end %>
+</div>
+
+<div class="chat-input">
+  <%= form_with(model: [@task, @task.comments.build], local: true) do |form| %>
+    <%= form.text_area :content, placeholder: t("tasks.comment.type_your_comment"), class: "form-control", rows: 3, required: true %>
+    <%= form.submit t("tasks.comment.send"), class: "btn btn-primary mt-2" %>
+  <% end %>
+</div>

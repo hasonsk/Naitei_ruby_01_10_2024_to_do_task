@@ -43,3 +43,35 @@ tasks = []
 end
 
 puts "Seed data created successfully!"
+
+
+# Users
+user_1 = User.find(1)
+user_2 = User.find(2)
+
+# Tasks (Giả sử đã có sẵn một số tasks trong database)
+tasks = Task.all
+
+if tasks.any?
+  puts "Seeding comments for users..."
+
+  tasks.each do |task|
+    # Seed comments từ user_1
+    Comment.create!(
+      content: "This is a comment by #{user_1.name} on Task ##{task.id}.",
+      task_id: task.id,
+      user_id: user_1.id
+    )
+
+    # Seed comments từ user_2
+    Comment.create!(
+      content: "This is another comment by #{user_2.name} on Task ##{task.id}.",
+      task_id: task.id,
+      user_id: user_2.id
+    )
+  end
+
+  puts "Comments seeded successfully!"
+else
+  puts "No tasks available to seed comments."
+end
