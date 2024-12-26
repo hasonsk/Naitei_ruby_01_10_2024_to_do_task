@@ -14,7 +14,7 @@ class TasksController < ApplicationController
                  .filter_by_category(params[:category])
                  .filter_by_status(params[:status])
                  .filter_by_deadline(params[:deadline])
-    @pagy, @tasks = pagy(@tasks, limit: 5)
+    @pagy, @tasks = pagy @tasks, limit: 5
   end
 
   def create
@@ -23,6 +23,7 @@ class TasksController < ApplicationController
     if @task.save
       @task.task_participants.create(user: current_user, role: :creator)
       assign_assignee if params[:task][:assignee_id].present?
+      ActivityLogger.log(user: current_user, task: @task, action: "created", description: t("tasks.create.created_task"), id: @task.id)
       flash[:success] = t("tasks.successfully_created")
       redirect_to tasks_path
     else
@@ -32,7 +33,7 @@ class TasksController < ApplicationController
   end
 
   def create_subtask
-    @task = Task.find_by(id: params[:parent_task_id])
+    @task = Task.find_by id: params[:parent_task_id]
     unless @task
       flash[:error] = t("tasks.parent_task_not_found")
       redirect_to tasks_path and return
@@ -41,6 +42,7 @@ class TasksController < ApplicationController
     @subtask = @task.sub_tasks.build(subtask_params)
 
     if @subtask.save
+      ActivityLogger.log(user: current_user, task: @task, action: "created", description: t("tasks.create.created_subtask", id: @subtask.id))
       flash[:success] = t("tasks.subtask_create_successfully")
       redirect_to edit_task_path(@task)
     else
@@ -53,12 +55,20 @@ class TasksController < ApplicationController
   def edit
     @comments = @task.comments
     @subtasks = @task.sub_tasks
+    @activities = @task.activities.includes(:user)
     @pagy, @subtasks = pagy(@subtasks, items: 5)
   end
 
   def update
-    if @task.update(task_params)
+    @task.assign_attributes(task_params)
+    changes = @task.changes.transform_values { |change| { old: change[0], new: change[1] } }
+
+    if @task.save
       update_assignee if params[:task][:user_id].present?
+      if @task.parent_task_id
+        ActivityLogger.log(user: current_user, task: Task.find_by(id: (@task.parent_task_id)), action: "updated", description: t("tasks.update.updated_subtask", id: @task.id))
+      end
+      ActivityLogger.log(user: current_user, task: @task, action: "updated", changes: changes)
       flash[:success] = t("tasks.index.messages.successfully_updated")
       redirect_to tasks_path
     else
@@ -67,7 +77,11 @@ class TasksController < ApplicationController
   end
 
   def destroy
+    task_deleted = @task.dup
     if @task.destroy
+      if task_deleted.parent_task_id
+        ActivityLogger.log(user: current_user, task: Task.find_by(id: (task_deleted.parent_task_id)), action: "deleted", description: t("tasks.delete.deleted_subtask", id: task_deleted.id))
+      end
       flash[:success] = t("tasks.task_deleted")
     else
       flash[:error] = t("tasks.failed_to_delete_the_task")
@@ -78,7 +92,7 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(Task::TASK_PERMITTED_ATTRIBUTES, task_participants_attributes: [:user_id])
+    params.require(:task).permit(Task::TASK_PERMITTED_ATTRIBUTES, task_participants_attributes: %i[user_id])
   end
 
   def subtask_params
@@ -93,7 +107,7 @@ class TasksController < ApplicationController
     @task = Task.find_by(id: params[:id])
     return if @task
 
-    flash[:error] = t("tasks.not_found")
+    flash[:error] = t "tasks.not_found"
     redirect_to tasks_url, status: :see_other
   end
 
