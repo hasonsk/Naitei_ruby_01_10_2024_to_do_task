@@ -1,0 +1,5 @@
+<%= t "common.hi" %> <%= @user.name %>,
+
+<%= t "user.welcom_and_activate" %>
+
+<%= edit_account_activation_url(@user.activation_token, email: @user.email) %>

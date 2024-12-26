@@ -1,7 +1,7 @@
 <%= form_with model: @subtask, url: create_subtask_tasks_path(parent_task_id: parent_task_id), local: true, html: { class: "card shadow-sm" } do |f| %>
   <div class="card-body">
+    <%= f.hidden_field :parent_task_id, value: parent_task_id %>
     <div class="mb-4">
-      <%= f.hidden_field :parent_task_id, value: parent_task_id %>
       <%= f.label :title, t("tasks.title"), class: "form-label fw-bold" %>
       <%= f.text_field :title, class: "form-control form-control-lg", placeholder: t("tasks.enter_title"), required: true, aria: { label: t("tasks.title") } %>
     </div>

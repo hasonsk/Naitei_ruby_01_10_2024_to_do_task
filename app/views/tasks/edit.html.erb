@@ -9,14 +9,18 @@
       <% unless @task.parent_task %>
         <button id="add-subtask-btn" class="btn btn-primary"><%= t("tasks.edit.add_new_subtask") %></button>
         <% if @subtasks.present? && @subtasks.any? %>
-          <%= render 'task_table', tasks: @subtasks, pagy: @pagy %>
+          <%
+=begin%>
+ <%= render "task_table", tasks: @subtasks, pagy: @pagy %>
+<%
+=end%>
         <% else %>
           <p><%= t("tasks.index.messages.no_subtasks") %></p>
         <% end %>
         <div id="subtask-popup" class="popup" style="display: none;">
           <div class="popup-content">
             <span class="close" id="close-popup">&times;</span>
-            <%= render "subtask_form", task: @subtask, parent_task_id: @task.id %>
+            <%= render "subtask_form", task: @task, parent_task_id: @task.id %>
           </div>
         </div>
         <div class="overlay" id="overlay" style="display: none;"></div>
@@ -26,10 +30,10 @@
 
   <div class="col-md-4 comments-logs">
       <div class="comments--box">
-        <%= render 'comments/chat', comments: @comments, current_user: current_user %>
+        <%= render "comments/chat", comments: @comments, current_user: current_user %>
       </div>
       <div class="activity-history">
-          <%= render 'activities/show', activities: @activities, current_user: current_user %>
+          <%= render "activities/show", activities: @activities, current_user: current_user %>
       </div>
   </div>
 </div>

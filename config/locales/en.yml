@@ -11,12 +11,20 @@ en:
     signup: "Sign up"
   user:
     please_check_your_mail: "Please check your mail"
+    welcome_and_activate: "Welcome to our application! Please activate your account by clicking the link below:"
+    activate: "Activate your account"
     please_login: "Please login"
+    account_activation: "Account activation"
+    please_check_your_mail: "Please check your mail"
+    invalid_activation_link: "Invalid activation link"
   static_pages:
     home:
       title: "Home"
+      welcome: "Welcome"
   common:
     ago: "ago"
+    todollo: "Todollo"
+    hi: "Hi"
   tasks:
     task_deleted: "Task deleted successfully!"
     task_create_successfully: "Task create successfully!"

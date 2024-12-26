@@ -18,7 +18,7 @@ class Task < ApplicationRecord
   validates :status, presence: true
   validates :deadline, comparison: { greater_than: :start_date, allow_blank: true }, if: :start_date?
   TASK_PERMITTED_ATTRIBUTES = %i[title description priority status start_date deadline category_id user_id assignee_id parent_task_id].freeze
-  SUBTASK_PERMITTED_ATTRIBUTES = %i[title description priority status assignee_id start_date deadline category_id].freeze
+  SUBTASK_PERMITTED_ATTRIBUTES = %i[title description priority status assignee_id start_date deadline category_id parent_task_id].freeze
   scope :by_naitei, ->(user_id) { where("user_id = :user_id OR assignee_id = :user_id", user_id: user_id) }
   scope :by_priority, ->(priority) { where(priority: priorities[priority]) }
   scope :search, ->(query) { where("title LIKE ? OR description LIKE ?", "%#{query}%", "%#{query}%") if query.present? }

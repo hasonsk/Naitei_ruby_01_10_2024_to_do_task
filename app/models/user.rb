@@ -4,8 +4,9 @@ class User < ApplicationRecord
   before_save :downcase_email
 
   attr_accessor :remember_token, :activation_token, :reset_token
+  before_create :create_activation_digest
 
-  USER_PERMITTED_ATTRIBUTES = %i[name email password].freeze
+  USER_PERMITTED_ATTRIBUTES = %i[name email role password password_confirmation].freeze
 
   has_many :tasks, dependent: :destroy
   has_many :created_tasks, class_name: "Task", foreign_key: :creator_id, dependent: :destroy
@@ -68,8 +69,22 @@ class User < ApplicationRecord
     update_attribute :remember_digest, nil
   end
 
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
+
+  def activate
+    update_columns activated: true, activated_at: Time.zone.now
+  end
+
   private
   def downcase_email
     self.email = email.downcase
   end
+
+  def create_activation_digest
+    self.activation_token = User.new_token
+    self.activation_digest = User.digest activation_token
+  end
+
 end

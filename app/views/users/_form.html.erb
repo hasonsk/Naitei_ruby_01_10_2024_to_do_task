@@ -1,0 +1,28 @@
+<%= form_with model: @user, local: true do |form| %>
+  <!-- Hidden field để đặt vai trò mặc định là 'naitei' -->
+  <%= form.hidden_field :role, value: "naitei" %>
+
+  <div class="mb-3">
+    <%= form.label :name, t("user.name") %>
+    <%= form.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :email, t("user.email") %>
+    <%= form.email_field :email, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :password, t("user.password") %>
+    <%= form.password_field :password, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :password_confirmation, t("user.password_confirmation") %>
+    <%= form.password_field :password_confirmation, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit t("user.sign_up"), class: "btn btn-primary" %>
+  </div>
+<% end %>

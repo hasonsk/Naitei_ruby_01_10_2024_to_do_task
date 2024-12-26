@@ -1,0 +1,6 @@
+<h1><%= t "common.todollo" %></h1>
+
+<p><%= t "common.hi" %> <%= @user.name %>, </p>
+<p><%= t "user.welcom_and_activate" %></p>
+<%= link_to t("user.activate"), edit_account_activation_url(@user.activation_token,
+                                                    email: @user.email) %>

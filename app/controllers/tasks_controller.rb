@@ -106,7 +106,7 @@ class TasksController < ApplicationController
   end
 
   def subtask_params
-    params.permit(Task::SUBTASK_PERMITTED_ATTRIBUTES)
+    params.require(:task).permit(Task::SUBTASK_PERMITTED_ATTRIBUTES)
   end
 
   def comment_params
