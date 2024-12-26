@@ -2,36 +2,7 @@
 <h1><%= t "tasks.index.title" %></h1>
 <body>
   <div class="container mt-5">
-
-    <div class="row mb-3">
-      <div class="col-md-3">
-        <input type="text" class="form-control" placeholder="<%= t("tasks.index.filter.search_placeholder") %>" id="search" name="search" value="<%= params[:search] %>">
-      </div>
-      <div class="col-md-2">
-        <select class="form-select" id="filter-category" name="category">
-          <option value=""><%= t("tasks.index.filter.all_categories") %></option>
-          <% if @categories.present? %>
-            <% @categories.each do |category| %>
-              <option value="<%= category.id %>" <%= "selected" if params[:category].to_i == category.id %>><%= category.name %></option>
-            <% end %>
-          <% end %>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <select class="form-select" id="filter-status" name="status">
-          <option value=""><%= t("tasks.index.filter.all_statuses") %></option>
-          <option value="pending"><%= t("tasks.index.filter.pending") %></option>
-          <option value="in_progress"><%= t("tasks.index.filter.in_progress") %></option>
-          <option value="completed"><%= t("tasks.index.filter.completed") %></option>
-          <option value="expired"><%= t("tasks.index.filter.expired") %></option>
-        </select>
-      </div>
-      <div class="col-md-3 text-end">
-        <button class="btn btn-primary" id="filter-btn"><%= t("tasks.index.filter.filter_button") %></button>
-        <a href="<%= new_task_path %>" class="btn btn-success"><%= t("tasks.index.filter.create_task_button") %></a>
-      </div>
-    </div>
-
+    <%= render "shared/form_filter" %>
     <%= render "task_table", tasks: @tasks, pagy: @pagy %>
   </div>
 </body>

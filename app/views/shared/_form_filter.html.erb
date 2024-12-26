@@ -1,0 +1,50 @@
+<%= form_tag(tasks_path, method: :get, class: "row mb-3") do %>
+  <div class="col-md-3">
+    <input type="text" class="form-control" placeholder="<%= t("tasks.index.filter.search_placeholder") %>" id="search" name="search" value="<%= params[:search] %>">
+  </div>
+
+  <div class="col-md-2">
+    <select class="form-select" id="filter-category" name="category">
+      <option value=""><%= t("tasks.index.filter.all_categories") %></option>
+      <% if @categories.present? %>
+        <% @categories.each do |category| %>
+          <option value="<%= category.id %>" <%= "selected" if params[:category].to_i == category.id %>><%= category.name %></option>
+        <% end %>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="col-md-2">
+    <select class="form-select" id="filter-status" name="status">
+      <option value=""><%= t("tasks.index.filter.all_statuses") %></option>
+      <option value="pending" <%= "selected" if params[:status] == "pending" %>><%= t("tasks.index.filter.pending") %></option>
+      <option value="in_progress" <%= "selected" if params[:status] == "in_progress" %>><%= t("tasks.index.filter.in_progress") %></option>
+      <option value="completed" <%= "selected" if params[:status] == "completed" %>><%= t("tasks.index.filter.completed") %></option>
+      <option value="expired" <%= "selected" if params[:status] == "expired" %>><%= t("tasks.index.filter.expired") %></option>
+    </select>
+  </div>
+
+  <% if current_user.mentor? %>
+    <div class="col-md-2">
+      <select class="form-select" id="filter-naitei" name="naitei">
+        <option value=""><%= t("tasks.index.filter.select_naitei") %></option>
+        <% User.naitei.each do |naitei| %>
+          <option value="<%= naitei.id %>" <%= "selected" if params[:naitei].to_i == naitei.id %>><%= naitei.name %></option>
+        <% end %>
+      </select>
+    </div>
+  <% else %>
+    <div class="col-md-2">
+      <select class="form-select" id="filter-role" name="role">
+        <option value=""><%= t("tasks.index.filter.select_role") %></option>
+        <option value="creator" <%= "selected" if params[:role] == "creator" %>><%= t("tasks.index.filter.creator") %></option>
+        <option value="assignee" <%= "selected" if params[:role] == "assignee" %>><%= t("tasks.index.filter.assignee") %></option>
+      </select>
+    </div>
+  <% end %>
+
+  <div class="col-md-3 text-end">
+    <button class="btn btn-primary" id="filter-btn"><%= t("tasks.index.filter.filter_button") %></button>
+    <a href="<%= new_task_path %>" class="btn btn-success"><%= t("tasks.index.filter.create_task_button") %></a>
+  </div>
+<% end %>

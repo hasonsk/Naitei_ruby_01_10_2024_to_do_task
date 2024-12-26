@@ -9,16 +9,25 @@ class TasksController < ApplicationController
   end
 
   def index
-    @tasks = if current_user.mentor?
-               Task.all
-    else
-      Task.by_naitei current_user.id
+    @tasks = current_user.mentor? ? Task.all : Task.by_naitei(current_user.id)
+
+    @tasks = @tasks.search(params[:search])
+                   .filter_by_category(params[:category])
+                   .filter_by_status(params[:status])
+
+    if current_user.mentor? && params[:naitei].present?
+      @tasks = @tasks.where(assignee_id: params[:naitei])
     end
 
-    @tasks = @tasks.filter_by_category(params[:category])
-                   .filter_by_status(params[:status])
-                   .filter_by_deadline(params[:deadline])
-    @pagy, @tasks = pagy @tasks, limit: 5
+    if current_user.naitei?
+      if params[:role] == :creator
+        @tasks = @tasks.where(user_id: current_user.id)
+      elsif params[:role] == :assignee
+        @tasks = @tasks.where(assignee_id: current_user.id)
+      end
+    end
+
+    @pagy, @tasks = pagy(@tasks, limit: 5)
   end
 
   def create

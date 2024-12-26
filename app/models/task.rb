@@ -21,6 +21,10 @@ class Task < ApplicationRecord
   SUBTASK_PERMITTED_ATTRIBUTES = %i[title description priority status assignee_id start_date deadline category_id].freeze
   scope :by_naitei, ->(user_id) { where("user_id = :user_id OR assignee_id = :user_id", user_id: user_id) }
   scope :by_priority, ->(priority) { where(priority: priorities[priority]) }
+  scope :search, ->(query) { where("title LIKE ? OR description LIKE ?", "%#{query}%", "%#{query}%") if query.present? }
+  scope :filter_by_creator_or_assignee, ->(user_id) {
+    where("user_id = ? OR assignee_id = ?", user_id, user_id)
+  }
   scope :by_status, ->(status) { where(status: statuses[status]) }
   scope :filter_by_category, ->(category) { where(category_id: category) if category.present? }
   scope :filter_by_status, ->(status) { where(status: status) if status.present? }
