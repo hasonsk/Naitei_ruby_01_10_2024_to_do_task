@@ -1,33 +1,35 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[edit update destroy]
   before_action :logged_in_user, only: %i[create edit destroy]
-  before_action :set_categories, only: %i[new create index edit update create_subtask]
+  before_action :authorize_user!, only: %i[update destroy]
+  before_action :set_categories, :available_users, only: %i[new create index edit update create_subtask]
 
   def new
     @task = Task.new
-    @task.task_participants.build if @task.task_participants.empty?
-    @users = User.all
   end
 
   def index
-    @tasks = Task.by_user(current_user)
-                 .filter_by_category(params[:category])
-                 .filter_by_status(params[:status])
-                 .filter_by_deadline(params[:deadline])
+    @tasks = if current_user.mentor?
+               Task.all
+    else
+      Task.by_naitei current_user.id
+    end
+
+    @tasks = @tasks.filter_by_category(params[:category])
+                   .filter_by_status(params[:status])
+                   .filter_by_deadline(params[:deadline])
     @pagy, @tasks = pagy @tasks, limit: 5
   end
 
   def create
     @task = current_user.tasks.build(task_params)
+    @task.assignee_id ||= current_user.id
 
     if @task.save
-      @task.task_participants.create(user: current_user, role: :creator)
-      assign_assignee if params[:task][:assignee_id].present?
-      ActivityLogger.log(user: current_user, task: @task, action: "created", description: t("tasks.create.created_task"), id: @task.id)
+      ActivityLogger.log(user: current_user, task: @task, action: "created", description: t("tasks.create.created_task", id: @task.id))
       flash[:success] = t("tasks.successfully_created")
       redirect_to tasks_path
     else
-      @users = User.all
       render :new, status: :unprocessable_entity
     end
   end
@@ -39,14 +41,14 @@ class TasksController < ApplicationController
       redirect_to tasks_path and return
     end
 
-    @subtask = @task.sub_tasks.build(subtask_params)
+    @subtask = @task.subtasks.build(subtask_params)
 
     if @subtask.save
       ActivityLogger.log(user: current_user, task: @task, action: "created", description: t("tasks.create.created_subtask", id: @subtask.id))
       flash[:success] = t("tasks.subtask_create_successfully")
       redirect_to edit_task_path(@task)
     else
-      @subtasks = @task.sub_tasks
+      @subtasks = @task.subtasks
       flash.now[:error] = t("tasks.failed_to_create_subtask")
       render :edit, status: :unprocessable_entity
     end
@@ -54,7 +56,7 @@ class TasksController < ApplicationController
 
   def edit
     @comments = @task.comments
-    @subtasks = @task.sub_tasks
+    @subtasks = @task.subtasks
     @activities = @task.activities.includes(:user)
     @pagy, @subtasks = pagy(@subtasks, items: 5)
   end
@@ -64,7 +66,6 @@ class TasksController < ApplicationController
     changes = @task.changes.transform_values { |change| { old: change[0], new: change[1] } }
 
     if @task.save
-      update_assignee if params[:task][:user_id].present?
       if @task.parent_task_id
         ActivityLogger.log(user: current_user, task: Task.find_by(id: (@task.parent_task_id)), action: "updated", description: t("tasks.update.updated_subtask", id: @task.id))
       end
@@ -115,12 +116,14 @@ class TasksController < ApplicationController
     @categories = current_user.categories
   end
 
-  def assign_assignee
-    @task.task_participants.create(user_id: params[:task][:user_id], role: :assignee)
+  def available_users
+    @users = current_user.mentor? ? User.all : [ current_user ]
   end
 
-  def update_assignee
-    @task.task_participants.where(role: :assignee).destroy_all
-    assign_assignee
+  def authorize_user!
+    if current_user.naitei? && @task.user_id != current_user.id && @task.assignee_id != current_user.id
+      flash[:error] = t("tasks.errors.not_authorized")
+      redirect_to tasks_path
+    end
   end
 end

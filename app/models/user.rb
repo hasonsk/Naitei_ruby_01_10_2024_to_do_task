@@ -39,6 +39,14 @@ class User < ApplicationRecord
     end
   end
 
+  def mentor?
+    role == "mentor"
+  end
+
+  def naitei?
+    role == "naitei"
+  end
+
   def remember
     self.remember_token = User.new_token
     update_attribute :remember_digest, User.digest(remember_token)

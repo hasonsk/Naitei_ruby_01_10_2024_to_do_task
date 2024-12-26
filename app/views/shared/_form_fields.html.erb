@@ -19,8 +19,8 @@
 </div>
 
 <div class="mb-4">
-  <%= f.label :user_id, t("tasks.assignee"), class: "form-label fw-bold" %>
-  <%= f.select :user_id, options_from_collection_for_select(User.all, :id, :name, @task.task_participants.find_by(role: :assignee)&.user_id), { include_blank: t("tasks.select_assignee") }, class: "form-control" %>
+  <%= f.label :assignee_id, t("tasks.assignee"), class: "form-label fw-bold" %>
+  <%= f.select :assignee_id, options_from_collection_for_select(@users, :id, :name, @task.assignee_id), { include_blank: t("tasks.select_assignee") }, class: "form-control" %>
 </div>
 
 <div class="row mb-4">

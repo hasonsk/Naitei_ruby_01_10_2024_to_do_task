@@ -34,6 +34,8 @@ en:
     assignee: "Assignee"
     start_date: "Start date"
     deadline: "Deadline"
+    successfully_created: "Succesfully created"
+    subtask_create_successfully: "Subtask create sucessfully"
     save: "Save"
     select_category: "Select category"
     index:

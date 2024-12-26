@@ -2,15 +2,15 @@
 admin = User.create!(
   email: "admin@example.com",
   password: "password123",
-  name: "Admin User",
-  role: "supervisor"
+  name: "Menter",
+  role: "menter"
 )
 
 user = User.create!(
   email: "user@example.com",
   password: "password123",
-  name: "Regular User",
-  role: "mentor"
+  name: "Naiteisha",
+  role: "naitei"
 )
 
 # Create Categories
@@ -35,9 +35,6 @@ tasks = []
     created_at: Time.now,
     updated_at: Time.now
   )
-
-  task.task_participants.create!(user: admin, role: "creator")
-  task.task_participants.create!(user: user, role: "assignee") if [ true, false ].sample
 
   tasks << task
 end
