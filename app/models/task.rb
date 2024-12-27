@@ -9,6 +9,8 @@ class Task < ApplicationRecord
   enum priority: Settings.default.priorities.to_h.transform_keys(&:to_sym)
   enum status: Settings.default.status.to_h.transform_keys(&:to_sym)
 
+  accepts_nested_attributes_for :subtasks, allow_destroy: true, reject_if: :all_blank
+
   validates :title, presence: true, length: { maximum: Settings.default.task_title_max_length }
   validates :priority, presence: true
   validates :status, presence: true

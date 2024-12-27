@@ -18,6 +18,7 @@ en:
   tasks:
     task_deleted: "Task deleted successfully!"
     task_create_successfully: "Task create successfully!"
+    parent_task_not_found: "Parent task notfound"
     successfully_updated: "Successfully updated"
     failed_to_delete_the_task: "Failed to delete the task"
     not_found: "Not found"
@@ -58,9 +59,16 @@ en:
         delete: "Delete"
       messages:
         no_tasks: "No tasks found."
+        no_subtasks: "No subtasks"
+        successfully_updated: "Successfully updated"
 
     update:
       title: "Update Task"
+
+    edit:
+      add_new_subtask: "Add New Subtask"
+      messages:
+        no_tasks: "No tasks found."
 
     new:
       title: "New Task"
