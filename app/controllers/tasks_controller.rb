@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[destroy]
+  before_action :set_task, only: %i[destroy update edit]
   before_action :logged_in_user, only: %i[create destroy]
-  before_action :set_categories, :available_users, only: %i[new create edit]
+  before_action :set_categories, :available_users, only: %i[new create edit update]
 
   def new
     @task = Task.new
@@ -23,8 +23,15 @@ class TasksController < ApplicationController
     end
   end
 
-  def edit
-    @users = available_users
+  def edit; end
+
+  def update
+    if @task.update(task_params)
+      flash[:success] = t("tasks.successfully_updated")
+      redirect_to tasks_path
+    else
+      render :edit
+    end
   end
 
   def destroy

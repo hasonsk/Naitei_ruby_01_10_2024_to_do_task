@@ -18,6 +18,7 @@ en:
   tasks:
     task_deleted: "Task deleted successfully!"
     task_create_successfully: "Task create successfully!"
+    successfully_updated: "Successfully updated"
     failed_to_delete_the_task: "Failed to delete the task"
     not_found: "Not found"
     title: "Title"
