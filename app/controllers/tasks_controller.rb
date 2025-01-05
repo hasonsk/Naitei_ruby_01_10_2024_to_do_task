@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[destroy]
+  before_action :set_task, only: %i[destroy edit update]
   before_action :logged_in_user, only: %i[create destroy]
-  before_action :set_categories, :available_users, only: %i[new index create edit]
+  before_action :set_categories, :set_user, :available_users, only: %i[new index create edit]
 
   def new
     @task = Task.new
@@ -24,7 +24,18 @@ class TasksController < ApplicationController
   end
 
   def edit
-    @users = available_users
+    @subtask = @task.subtasks.build
+    @subtasks = @task.subtasks.where.not(id: nil)
+    @pagy, @subtasks = pagy @subtasks, limit: Settings.default.max_tasks_per_page_5
+  end
+
+  def update
+    if @task.update(task_params)
+      flash[:success] = t("tasks.index.messages.successfully_updated")
+      redirect_to tasks_path
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -50,11 +61,15 @@ class TasksController < ApplicationController
     redirect_to tasks_url, status: :see_other
   end
 
-  def available_users
-    @users = current_user.mentor? ? current_user.mentees : [ current_user ]
+  def set_user
+    @user = current_user
   end
 
   def set_categories
     @categories = current_user.categories
+  end
+
+  def available_users
+    @users = current_user.mentor? ? current_user.mentees : [ current_user ]
   end
 end
