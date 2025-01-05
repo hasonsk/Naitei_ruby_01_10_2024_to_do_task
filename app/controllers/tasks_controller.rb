@@ -2,6 +2,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[destroy edit update]
   before_action :logged_in_user, only: %i[create destroy]
   before_action :set_categories, :set_user, :available_users, only: %i[new index create edit]
+  before_action :set_comment, only: %i[edit]
 
   def new
     @task = Task.new
@@ -59,6 +60,10 @@ class TasksController < ApplicationController
 
     flash[:error] = t "tasks.not_found"
     redirect_to tasks_url, status: :see_other
+  end
+
+  def set_comment
+    @comments = @task.comments
   end
 
   def set_user
