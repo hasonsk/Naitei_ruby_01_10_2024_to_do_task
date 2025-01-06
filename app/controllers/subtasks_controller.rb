@@ -5,6 +5,13 @@ class SubtasksController < ApplicationController
     @subtask = current_user.tasks.build subtask_params
     if @subtask.save
       flash[:success] = t "tasks.new.subtask_created_successfully"
+      ActivityLogger.log(
+        user: current_user,
+        task: @task,
+        action: "created",
+        description: t("tasks.create.created_subtask",
+        title: @subtask.title, id: @subtask.id)
+      )
       redirect_to edit_task_path @task
     else
       flash[:alert] = @subtask.errors.full_messages.to_sentence

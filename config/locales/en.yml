@@ -13,6 +13,8 @@ en:
     please_check_your_mail: "Please check your mail"
     please_login: "Please login"
     you_sure: "You sure"
+  common:
+    ago: "ago"
   static_pages:
     home:
       title: "Home"
@@ -59,9 +61,16 @@ en:
       messages:
         no_tasks: "No tasks found."
         no_subtasks: "No subtasks"
+        successfully_updated: "Successfully updated"
 
     update:
       title: "Update Task"
+      updated_subtask: "Updated subtask %{title} (id: #%{id})"
+    delete:
+      deleted_subtask: "Deleted subtask %{title} (id: #%{id})"
+    create:
+      created_subtask: "Created subtask %{title} (id: #%{id})"
+      created_task: "Created task %{title} (id: #%{id})"
 
     new:
       title: "New Task"
@@ -77,3 +86,6 @@ en:
         type_your_comment: "Type your comment..."
         send: "Send"
         delete: "Delete"
+
+    activities:
+      activities_history: "Activities History"
