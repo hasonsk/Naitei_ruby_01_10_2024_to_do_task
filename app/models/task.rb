@@ -21,6 +21,10 @@ class Task < ApplicationRecord
     joins("LEFT JOIN users AS mentees ON mentees.id = tasks.assignee_id")
     .where("tasks.user_id = :mentor_id OR mentees.mentor_id = :mentor_id", mentor_id: mentor_id)
   }
+  scope :search, ->(query) { where("title LIKE ? OR description LIKE ?", "%#{query}%", "%#{query}%") if query.present? }
+  scope :filter_by_creator_or_assignee, ->(user_id) {
+    where("user_id = ? OR assignee_id = ?", user_id, user_id)
+  }
   scope :by_priority, ->(priority) { where(priority: priorities[priority]) }
   scope :by_status, ->(status) { where(status: statuses[status]) }
   scope :filter_by_category, ->(category) { where(category_id: category) if category.present? }

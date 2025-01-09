@@ -10,6 +10,21 @@ class TasksController < ApplicationController
 
   def index
     @tasks = current_user.mentor_role? ? Task.by_mentor_and_mentees(current_user.id) : current_user.tasks
+    @tasks = @tasks.search(params[:search])
+                   .filter_by_category(params[:category])
+                   .filter_by_status(params[:status])
+
+    if current_user.mentor_role? && params[:naitei].present?
+      @tasks = @tasks.where(assignee_id: params[:naitei])
+    end
+
+    if current_user.naitei_role?
+      if params[:role] == :creator
+        @tasks = @tasks.where(user_id: current_user.id)
+      elsif params[:role] == :assignee
+        @tasks = @tasks.where(assignee_id: current_user.id)
+      end
+    end
 
     @pagy, @tasks = pagy @tasks, limit: Settings.default.max_tasks_per_page_5
   end
