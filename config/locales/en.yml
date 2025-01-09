@@ -3,6 +3,8 @@ en:
     base_title: "Todollo"
   header:
     login: "Log in"
+  common:
+    ago: "ago"
   login:
     email: "Email"
     password: "Password"
@@ -63,6 +65,12 @@ en:
     update:
       title: "Update Task"
       successfully_updated: "Successfully updated"
+      updated_subtask: "Updated subtask %{title} (id: #%{id})"
+    delete:
+      deleted_subtask: "Deleted subtask %{title} (id: #%{id})"
+    create:
+      created_subtask: "Created subtask %{title} (id: #%{id})"
+      created_task: "Created task %{title} (id: #%{id})"
 
     new:
       title: "New Task"
@@ -78,3 +86,6 @@ en:
         type_your_comment: "Type your comment..."
         send: "Send"
         delete: "Delete"
+
+    activities:
+      activities_history: "Activities History"

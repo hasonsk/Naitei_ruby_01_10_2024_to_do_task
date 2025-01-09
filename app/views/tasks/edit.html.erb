@@ -33,5 +33,11 @@
     <div class="comments--box">
       <%= render "comments/chat", comments: @comments, current_user: current_user %>
     </div>
+
+    <% unless @task.parent_task %>
+      <div class="activity-history">
+        <%= render 'activities/show', activities: @activities, current_user: current_user %>
+      </div>
+    <% end %>
   </div>
 </div>
