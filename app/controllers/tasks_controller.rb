@@ -2,6 +2,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[edit update destroy]
   before_action :logged_in_user, only: %i[create edit destroy]
   before_action :set_categories, :set_user, :available_users, only: %i[new index create edit]
+  before_action :set_comment, only: %i[edit]
 
   def new
     @task = Task.new
@@ -70,5 +71,9 @@ class TasksController < ApplicationController
 
   def set_categories
     @categories = current_user.categories
+  end
+
+  def set_comment
+    @comments = @task.comments
   end
 end
